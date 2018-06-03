@@ -1,0 +1,112 @@
+SELECT question, COUNT(*)
+ FROM survey
+ GROUP BY question;
+ 
+ 
+SELECT DISTINCT
+q.user_id,
+h.user_id IS NOT NULL AS 'is_home_try_on',
+h.number_of_pairs,
+p.user_id IS NOT NULL AS 'is_purchase'
+
+FROM quiz q 
+LEFT JOIN home_try_on h
+  ON  q.user_id = h.user_id
+LEFT JOIN purchase p
+  ON p.user_id = q.user_id
+LIMIT 10;
+
+
+
+
+ WITH browse as(SELECT DISTINCT
+q.user_id,
+h.user_id IS NOT NULL AS 'is_home_try_on',
+h.number_of_pairs,
+p.user_id IS NOT NULL AS 'is_purchase'
+
+FROM quiz q 
+LEFT JOIN home_try_on h
+  ON  q.user_id = h.user_id
+LEFT JOIN purchase p
+  ON p.user_id = q.user_id)
+
+SELECT COUNT( b.user_id) as 'DID purchase totals' ,
+b.number_of_pairs as 'no.of pairs tried'
+FROM browse b
+WHERE b.number_of_pairs > 0 AND b.is_purchase = 1
+GROUP BY b.number_of_pairs;
+
+
+
+
+
+ WITH browse as(SELECT DISTINCT
+q.user_id,
+h.user_id IS NOT NULL AS 'is_home_try_on',
+h.number_of_pairs,
+p.user_id IS NOT NULL AS 'is_purchase'
+
+FROM quiz q 
+LEFT JOIN home_try_on h
+  ON  q.user_id = h.user_id
+LEFT JOIN purchase p
+  ON p.user_id = q.user_id)
+
+SELECT COUNT( b.user_id) as 'DID NOT purchase totals' ,
+b.number_of_pairs AS 'no.of pairs tried'
+FROM browse b
+WHERE b.number_of_pairs > 0 AND b.is_purchase = 0 
+GROUP BY b.number_of_pairs;
+
+
+
+
+
+
+
+ WITH browse as(SELECT DISTINCT
+q.user_id,
+h.user_id IS NOT NULL AS 'is_home_try_on',
+h.number_of_pairs,
+p.user_id IS NOT NULL AS 'is_purchase'
+
+FROM quiz q 
+LEFT JOIN home_try_on h
+  ON  q.user_id = h.user_id
+LEFT JOIN purchase p
+  ON p.user_id = q.user_id)
+  
+SELECT COUNT(is_home_try_on) as 'no. of quizzes', 
+CASE 
+WHEN  is_home_try_on = 0 THEN 'NO'
+ELSE 'YES'
+END AS 'home trials'
+FROM browse
+GROUP BY 2;
+
+
+ WITH browse as(SELECT DISTINCT
+q.user_id,
+h.user_id IS NOT NULL AS 'is_home_try_on',
+h.number_of_pairs,
+p.user_id IS NOT NULL AS 'is_purchase'
+
+FROM quiz q 
+LEFT JOIN home_try_on h
+  ON  q.user_id = h.user_id
+LEFT JOIN purchase p
+  ON p.user_id = q.user_id)
+  
+
+
+
+SELECT COUNT(user_id) as 'customers', color as 'color preference'
+FROM quiz
+GROUP BY 2
+ORDER BY 1 DESC;
+
+SELECT COUNT(user_id) as 'sold', model_name as 'model', color, price, style
+FROM purchase
+GROUP BY 2,3
+ORDER BY 1 DESC;
